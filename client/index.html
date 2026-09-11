@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <!-- Fonts are self-hosted from /fonts, so there is nothing to preconnect to.
+         This stylesheet holds ONLY @font-face rules — no tokens, no component
+         classes — so it is safe on every route and cannot collide with either
+         design system. Linking it here rather than @importing it from the design
+         CSS is what kills the flash: the import sat behind the JS bundle and the
+         lazy design chunk, so the font could not start downloading until React
+         had mounted. -->
+    <link rel="stylesheet" href="/fonts/fonts.css" />
+    <!-- The brand wordmark is on both routes and is the most obvious swap
+         (script vs. sans), so it is fetched at highest priority. Its @font-face
+         uses font-display: block, and this preload is what keeps that block
+         period imperceptible. -->
+    <link
+      rel="preload"
+      href="/fonts/alex-brush-400-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <title>NAction Advisors LLC — Your First Call After An Accident</title>
+    <meta
+      name="description"
+      content="NAction Advisors LLC connects Californians with trusted towing, collision repair, and personal injury legal partners after a crash. Search by zip code, or apply to join the network."
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

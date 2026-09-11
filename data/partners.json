@@ -1,0 +1,747 @@
+{
+  "_readme": "PLACEHOLDER DATA. Every record below is fictional and marked \"seed\": true, with an example.com website. Replace this file with the real partner directory before launch. The server re-reads this file whenever it changes on disk, so no restart is needed after editing. Fields: id (unique), category (tow|repair|legal), name, phone, website, city, zips (exact zips served, ranked first), regions (LA|SD|IE|CENTRAL|BAY|SAC|NORTH), statewide (bool), tier (platinum|gold|silver \u2014 paid membership, best first, max 3 per tier per category; sponsors that serve the searched area lead results, but a statewide-only sponsor never outranks a local partner).",
+  "partners": [
+    {
+      "id": "tow-la-001",
+      "category": "tow",
+      "name": "Westside Tow & Recovery",
+      "phone": "(213) 555-0142",
+      "website": "https://example.com",
+      "city": "Los Angeles",
+      "zips": [
+        "90210",
+        "90211",
+        "90212",
+        "90064"
+      ],
+      "regions": [
+        "LA"
+      ],
+      "tier": "gold",
+      "seed": true
+    },
+    {
+      "id": "tow-la-002",
+      "category": "tow",
+      "name": "Anchor Towing Los Angeles",
+      "phone": "(213) 555-0118",
+      "website": "https://example.com",
+      "city": "Los Angeles",
+      "zips": [
+        "90210",
+        "90015",
+        "90017"
+      ],
+      "regions": [
+        "LA"
+      ],
+      "tier": "platinum",
+      "seed": true
+    },
+    {
+      "id": "tow-la-003",
+      "category": "tow",
+      "name": "Beverly Hills Roadside",
+      "phone": "(310) 555-0166",
+      "website": "https://example.com",
+      "city": "Beverly Hills",
+      "zips": [
+        "90210",
+        "90211"
+      ],
+      "regions": [
+        "LA"
+      ],
+      "tier": "silver",
+      "seed": true
+    },
+    {
+      "id": "tow-la-004",
+      "category": "tow",
+      "name": "Crenshaw Heavy Haul",
+      "phone": "(323) 555-0173",
+      "website": "https://example.com",
+      "city": "Los Angeles",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-la-005",
+      "category": "tow",
+      "name": "Del Rey Wrecker Service",
+      "phone": "(310) 555-0104",
+      "website": "https://example.com",
+      "city": "Marina del Rey",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-la-006",
+      "category": "tow",
+      "name": "Eastside Emergency Tow",
+      "phone": "(323) 555-0159",
+      "website": "https://example.com",
+      "city": "East Los Angeles",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-la-007",
+      "category": "tow",
+      "name": "Foothill Towing Co.",
+      "phone": "(626) 555-0131",
+      "website": "https://example.com",
+      "city": "Pasadena",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-la-008",
+      "category": "tow",
+      "name": "Harbor Freeway Recovery",
+      "phone": "(310) 555-0187",
+      "website": "https://example.com",
+      "city": "Torrance",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-la-009",
+      "category": "tow",
+      "name": "Valley Line Towing",
+      "phone": "(818) 555-0120",
+      "website": "https://example.com",
+      "city": "Van Nuys",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "repair-la-001",
+      "category": "repair",
+      "name": "Sunset Collision Center",
+      "phone": "(213) 555-0198",
+      "website": "https://example.com",
+      "city": "Los Angeles",
+      "zips": [
+        "90210",
+        "90046",
+        "90028"
+      ],
+      "regions": [
+        "LA"
+      ],
+      "tier": "gold",
+      "seed": true
+    },
+    {
+      "id": "repair-la-002",
+      "category": "repair",
+      "name": "Arroyo Auto Body",
+      "phone": "(626) 555-0145",
+      "website": "https://example.com",
+      "city": "Pasadena",
+      "regions": [
+        "LA"
+      ],
+      "tier": "silver",
+      "seed": true
+    },
+    {
+      "id": "repair-la-003",
+      "category": "repair",
+      "name": "Culver Craft Collision",
+      "phone": "(310) 555-0113",
+      "website": "https://example.com",
+      "city": "Culver City",
+      "regions": [
+        "LA"
+      ],
+      "tier": "platinum",
+      "seed": true
+    },
+    {
+      "id": "repair-la-004",
+      "category": "repair",
+      "name": "Sherman Oaks Frame & Paint",
+      "phone": "(818) 555-0192",
+      "website": "https://example.com",
+      "city": "Sherman Oaks",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "repair-la-005",
+      "category": "repair",
+      "name": "Wilshire Body Works",
+      "phone": "(213) 555-0155",
+      "website": "https://example.com",
+      "city": "Los Angeles",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "repair-la-006",
+      "category": "repair",
+      "name": "South Bay Precision Collision",
+      "phone": "(310) 555-0177",
+      "website": "https://example.com",
+      "city": "Hawthorne",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "legal-la-001",
+      "category": "legal",
+      "name": "Alvarez & Cole Injury Law",
+      "phone": "(213) 555-0170",
+      "website": "https://example.com",
+      "city": "Los Angeles",
+      "zips": [
+        "90210",
+        "90071"
+      ],
+      "regions": [
+        "LA"
+      ],
+      "tier": "gold",
+      "seed": true
+    },
+    {
+      "id": "legal-la-002",
+      "category": "legal",
+      "name": "Bell Canyon Accident Attorneys",
+      "phone": "(818) 555-0136",
+      "website": "https://example.com",
+      "city": "Woodland Hills",
+      "regions": [
+        "LA"
+      ],
+      "tier": "silver",
+      "seed": true
+    },
+    {
+      "id": "legal-la-003",
+      "category": "legal",
+      "name": "Marsh & Okonkwo Trial Lawyers",
+      "phone": "(213) 555-0164",
+      "website": "https://example.com",
+      "city": "Los Angeles",
+      "regions": [
+        "LA"
+      ],
+      "tier": "platinum",
+      "seed": true
+    },
+    {
+      "id": "legal-la-004",
+      "category": "legal",
+      "name": "Pasadena Injury Advocates",
+      "phone": "(626) 555-0108",
+      "website": "https://example.com",
+      "city": "Pasadena",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "legal-la-005",
+      "category": "legal",
+      "name": "Westlake Personal Injury Group",
+      "phone": "(310) 555-0149",
+      "website": "https://example.com",
+      "city": "Santa Monica",
+      "regions": [
+        "LA"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-sd-001",
+      "category": "tow",
+      "name": "Harbor City Towing",
+      "phone": "(619) 555-0112",
+      "website": "https://example.com",
+      "city": "San Diego",
+      "zips": [
+        "92101",
+        "92103"
+      ],
+      "regions": [
+        "SD"
+      ],
+      "tier": "gold",
+      "seed": true
+    },
+    {
+      "id": "tow-sd-002",
+      "category": "tow",
+      "name": "Coastline Recovery Services",
+      "phone": "(619) 555-0158",
+      "website": "https://example.com",
+      "city": "Chula Vista",
+      "regions": [
+        "SD"
+      ],
+      "tier": "platinum",
+      "seed": true
+    },
+    {
+      "id": "tow-sd-003",
+      "category": "tow",
+      "name": "Mission Valley Tow",
+      "phone": "(858) 555-0126",
+      "website": "https://example.com",
+      "city": "San Diego",
+      "regions": [
+        "SD"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-sd-004",
+      "category": "tow",
+      "name": "Orange Coast Roadside",
+      "phone": "(714) 555-0181",
+      "website": "https://example.com",
+      "city": "Santa Ana",
+      "regions": [
+        "SD"
+      ],
+      "seed": true
+    },
+    {
+      "id": "repair-sd-001",
+      "category": "repair",
+      "name": "Pacific Auto Body",
+      "phone": "(619) 555-0134",
+      "website": "https://example.com",
+      "city": "San Diego",
+      "zips": [
+        "92101"
+      ],
+      "regions": [
+        "SD"
+      ],
+      "tier": "gold",
+      "seed": true
+    },
+    {
+      "id": "repair-sd-002",
+      "category": "repair",
+      "name": "Gaslamp Collision Works",
+      "phone": "(619) 555-0147",
+      "website": "https://example.com",
+      "city": "San Diego",
+      "regions": [
+        "SD"
+      ],
+      "tier": "platinum",
+      "seed": true
+    },
+    {
+      "id": "repair-sd-003",
+      "category": "repair",
+      "name": "Tustin Frame & Finish",
+      "phone": "(714) 555-0195",
+      "website": "https://example.com",
+      "city": "Tustin",
+      "regions": [
+        "SD"
+      ],
+      "seed": true
+    },
+    {
+      "id": "legal-sd-001",
+      "category": "legal",
+      "name": "Reyes Accident Attorneys",
+      "phone": "(619) 555-0189",
+      "website": "https://example.com",
+      "city": "San Diego",
+      "zips": [
+        "92101"
+      ],
+      "regions": [
+        "SD"
+      ],
+      "tier": "gold",
+      "seed": true
+    },
+    {
+      "id": "legal-sd-002",
+      "category": "legal",
+      "name": "Bayfront Injury Law",
+      "phone": "(619) 555-0163",
+      "website": "https://example.com",
+      "city": "San Diego",
+      "regions": [
+        "SD"
+      ],
+      "tier": "platinum",
+      "seed": true
+    },
+    {
+      "id": "legal-sd-003",
+      "category": "legal",
+      "name": "Newport Crash Counsel",
+      "phone": "(949) 555-0117",
+      "website": "https://example.com",
+      "city": "Irvine",
+      "regions": [
+        "SD"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-bay-001",
+      "category": "tow",
+      "name": "Bayline Towing Co.",
+      "phone": "(510) 555-0121",
+      "website": "https://example.com",
+      "city": "Oakland",
+      "zips": [
+        "94607",
+        "94612"
+      ],
+      "regions": [
+        "BAY"
+      ],
+      "tier": "silver",
+      "seed": true
+    },
+    {
+      "id": "tow-bay-002",
+      "category": "tow",
+      "name": "Peninsula Emergency Tow",
+      "phone": "(650) 555-0139",
+      "website": "https://example.com",
+      "city": "San Mateo",
+      "regions": [
+        "BAY"
+      ],
+      "tier": "platinum",
+      "seed": true
+    },
+    {
+      "id": "tow-bay-003",
+      "category": "tow",
+      "name": "South Bay Wrecker",
+      "phone": "(408) 555-0184",
+      "website": "https://example.com",
+      "city": "San Jose",
+      "regions": [
+        "BAY"
+      ],
+      "seed": true
+    },
+    {
+      "id": "repair-bay-001",
+      "category": "repair",
+      "name": "Golden Gate Collision",
+      "phone": "(415) 555-0177",
+      "website": "https://example.com",
+      "city": "San Francisco",
+      "zips": [
+        "94102",
+        "94103"
+      ],
+      "regions": [
+        "BAY"
+      ],
+      "tier": "gold",
+      "seed": true
+    },
+    {
+      "id": "repair-bay-002",
+      "category": "repair",
+      "name": "Alameda Auto Restoration",
+      "phone": "(510) 555-0154",
+      "website": "https://example.com",
+      "city": "Alameda",
+      "regions": [
+        "BAY"
+      ],
+      "tier": "platinum",
+      "seed": true
+    },
+    {
+      "id": "repair-bay-003",
+      "category": "repair",
+      "name": "Silicon Valley Body Shop",
+      "phone": "(408) 555-0128",
+      "website": "https://example.com",
+      "city": "Santa Clara",
+      "regions": [
+        "BAY"
+      ],
+      "seed": true
+    },
+    {
+      "id": "legal-bay-001",
+      "category": "legal",
+      "name": "Nguyen & Park Law Group",
+      "phone": "(510) 555-0143",
+      "website": "https://example.com",
+      "city": "Oakland",
+      "regions": [
+        "BAY"
+      ],
+      "tier": "gold",
+      "seed": true
+    },
+    {
+      "id": "legal-bay-002",
+      "category": "legal",
+      "name": "Embarcadero Injury Partners",
+      "phone": "(415) 555-0191",
+      "website": "https://example.com",
+      "city": "San Francisco",
+      "regions": [
+        "BAY"
+      ],
+      "tier": "platinum",
+      "seed": true
+    },
+    {
+      "id": "tow-sac-001",
+      "category": "tow",
+      "name": "Capital City Towing",
+      "phone": "(916) 555-0165",
+      "website": "https://example.com",
+      "city": "Sacramento",
+      "zips": [
+        "95814",
+        "95816"
+      ],
+      "regions": [
+        "SAC"
+      ],
+      "tier": "silver",
+      "seed": true
+    },
+    {
+      "id": "tow-sac-002",
+      "category": "tow",
+      "name": "Delta Roadside Recovery",
+      "phone": "(209) 555-0132",
+      "website": "https://example.com",
+      "city": "Stockton",
+      "regions": [
+        "SAC"
+      ],
+      "seed": true
+    },
+    {
+      "id": "repair-sac-001",
+      "category": "repair",
+      "name": "Riverfront Auto Repair",
+      "phone": "(916) 555-0129",
+      "website": "https://example.com",
+      "city": "Sacramento",
+      "regions": [
+        "SAC"
+      ],
+      "tier": "silver",
+      "seed": true
+    },
+    {
+      "id": "repair-sac-002",
+      "category": "repair",
+      "name": "Folsom Collision Craft",
+      "phone": "(916) 555-0174",
+      "website": "https://example.com",
+      "city": "Folsom",
+      "regions": [
+        "SAC"
+      ],
+      "seed": true
+    },
+    {
+      "id": "legal-sac-001",
+      "category": "legal",
+      "name": "Delta Injury Law",
+      "phone": "(916) 555-0152",
+      "website": "https://example.com",
+      "city": "Sacramento",
+      "regions": [
+        "SAC"
+      ],
+      "tier": "silver",
+      "seed": true
+    },
+    {
+      "id": "legal-sac-002",
+      "category": "legal",
+      "name": "Sierra Accident Counsel",
+      "phone": "(916) 555-0107",
+      "website": "https://example.com",
+      "city": "Roseville",
+      "regions": [
+        "SAC"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-ie-001",
+      "category": "tow",
+      "name": "Inland Empire Towing",
+      "phone": "(951) 555-0161",
+      "website": "https://example.com",
+      "city": "Riverside",
+      "regions": [
+        "IE"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-ie-002",
+      "category": "tow",
+      "name": "High Desert Recovery",
+      "phone": "(760) 555-0115",
+      "website": "https://example.com",
+      "city": "Victorville",
+      "regions": [
+        "IE"
+      ],
+      "seed": true
+    },
+    {
+      "id": "repair-ie-001",
+      "category": "repair",
+      "name": "Redlands Collision Repair",
+      "phone": "(909) 555-0148",
+      "website": "https://example.com",
+      "city": "Redlands",
+      "regions": [
+        "IE"
+      ],
+      "seed": true
+    },
+    {
+      "id": "legal-ie-001",
+      "category": "legal",
+      "name": "Inland Injury Advocates",
+      "phone": "(951) 555-0193",
+      "website": "https://example.com",
+      "city": "Riverside",
+      "regions": [
+        "IE"
+      ],
+      "tier": "silver",
+      "seed": true
+    },
+    {
+      "id": "tow-central-001",
+      "category": "tow",
+      "name": "Central Valley Tow Service",
+      "phone": "(559) 555-0125",
+      "website": "https://example.com",
+      "city": "Fresno",
+      "regions": [
+        "CENTRAL"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-central-002",
+      "category": "tow",
+      "name": "Coastal Ridge Roadside",
+      "phone": "(805) 555-0176",
+      "website": "https://example.com",
+      "city": "San Luis Obispo",
+      "regions": [
+        "CENTRAL"
+      ],
+      "seed": true
+    },
+    {
+      "id": "repair-central-001",
+      "category": "repair",
+      "name": "Bakersfield Body & Paint",
+      "phone": "(661) 555-0138",
+      "website": "https://example.com",
+      "city": "Bakersfield",
+      "regions": [
+        "CENTRAL"
+      ],
+      "seed": true
+    },
+    {
+      "id": "legal-central-001",
+      "category": "legal",
+      "name": "Valley Crash Injury Law",
+      "phone": "(559) 555-0182",
+      "website": "https://example.com",
+      "city": "Fresno",
+      "regions": [
+        "CENTRAL"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-north-001",
+      "category": "tow",
+      "name": "Shasta Mountain Towing",
+      "phone": "(530) 555-0111",
+      "website": "https://example.com",
+      "city": "Redding",
+      "regions": [
+        "NORTH"
+      ],
+      "seed": true
+    },
+    {
+      "id": "tow-state-001",
+      "category": "tow",
+      "name": "California Roadside Partners",
+      "phone": "(800) 555-0100",
+      "website": "https://example.com",
+      "city": "Statewide",
+      "statewide": true,
+      "tier": "gold",
+      "seed": true,
+      "note": "Dispatches statewide, 24/7."
+    },
+    {
+      "id": "repair-state-001",
+      "category": "repair",
+      "name": "Statewide Collision Network",
+      "phone": "(800) 555-0111",
+      "website": "https://example.com",
+      "city": "Statewide",
+      "statewide": true,
+      "tier": "silver",
+      "seed": true,
+      "note": "Affiliate shops in most California metros."
+    },
+    {
+      "id": "legal-state-001",
+      "category": "legal",
+      "name": "California Accident Advocates",
+      "phone": "(800) 555-0122",
+      "website": "https://example.com",
+      "city": "Statewide",
+      "statewide": true,
+      "seed": true,
+      "note": "Takes cases anywhere in California."
+    }
+  ]
+}
