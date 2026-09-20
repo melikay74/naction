@@ -85,10 +85,13 @@ function PartnerCard({ partner }: { partner: PartnerResult }) {
           ) : (
             <span className="partner-name">{partner.name}</span>
           )}
-          <div className="partner-meta">
-            {partner.city}
-            {partner.note && ` · ${partner.note}`}
-          </div>
+          {/* The street address already names the city, so only address-less (free) cards show it. */}
+          {(!partner.address || partner.note) && (
+            <div className="partner-meta">
+              {!partner.address && partner.city}
+              {partner.note && (partner.address ? partner.note : ` · ${partner.note}`)}
+            </div>
+          )}
         </div>
       </div>
       {partner.address && <AddressLink address={partner.address} />}

@@ -41,6 +41,8 @@
   color: var(--color-neutral-700);
   margin: 0 0 36px;
   max-width: 48.25rem;
+  /* Even out line lengths so a lede never ends on a single orphaned word. */
+  text-wrap: balance;
 }
 
 /* Title with nothing following it inside its own block. */
