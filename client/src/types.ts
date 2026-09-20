@@ -15,29 +15,45 @@ export const CATEGORY_SHORT_LABELS: Record<Category, string> = {
 };
 
 /** Paid membership tiers, best first. Mirrors the server's TIERS. */
-export const TIERS = ['platinum', 'gold', 'silver'] as const;
+export const TIERS = ['network', 'featured', 'priority'] as const;
 export type Tier = (typeof TIERS)[number];
 
 export const TIER_LABELS: Record<Tier, string> = {
-  platinum: 'Platinum partner',
-  gold: 'Gold partner',
-  silver: 'Silver partner',
+  network: 'Network partner',
+  featured: 'Featured partner',
+  priority: 'Priority partner',
 };
 
+/** Social platforms a partner may list. Mirrors the server's SOCIALS. */
+export const SOCIALS = ['instagram', 'facebook', 'x', 'tiktok', 'youtube', 'linkedin', 'yelp', 'google'] as const;
+export type Social = (typeof SOCIALS)[number];
+
+/**
+ * A partner as the API sends it. The server only includes the fields a
+ * partner's tier entitles — free: name, city, phone; priority: + address;
+ * featured: + logo, website, two socials; network: + all socials — so the
+ * card just renders whatever is present.
+ */
 export interface PartnerResult {
   id: string;
   category: Category;
   name: string;
+  city: string;
   phone: string;
   tel: string;
-  website?: string;
-  city: string;
   tier?: Tier;
   note?: string;
   match: 'zip' | 'region' | 'statewide';
+  address?: string;
+  website?: string;
+  /** URL path, e.g. /logos/tow-la-002.png */
+  logo?: string;
+  socials?: Partial<Record<Social, string>>;
 }
 
 export interface CategoryPage {
+  /** Network Partners covering the area, shown in the band above the columns. */
+  spotlight: PartnerResult[];
   items: PartnerResult[];
   total: number;
   hasMore: boolean;

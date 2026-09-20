@@ -37,7 +37,14 @@ the app folder) create:
 /home/<cpanel-user>/naction-data/
 ```
 
-Upload `site/data/partners.json` into it.
+Upload `site/data/partners.json` into it, and the `site/data/logos/` folder alongside as
+`naction-data/logos/`.
+
+**Adding a partner's logo later** is an upload, not a redeploy: drop the PNG into `naction-data/logos/`
+via File Manager and set `"logo": "<filename>.png"` on the record in `partners.json`. The server serves
+it at `/logos/<filename>` and re-reads the JSON on change, so no restart is needed. If the file name
+does not match, the server logs a warning and shows the partner without a logo rather than a broken
+image.
 
 This is where partner applications accumulate. It lives **outside** the app directory on purpose — a
 redeploy replaces the app folder wholesale, which would otherwise wipe every application received since
@@ -182,7 +189,7 @@ Only after the real partner directory replaces the placeholder data.
 - The privacy policy still carries its "Draft for legal review" banner and needs a lawyer's eyes.
 - `service-area.png` and `join-qr.png` were never added, so the coverage map and QR show empty frames.
 - The legal questions noted in README.md: CalOPPA, § 6155 lawyer referral registration, and paid-placement
-  disclosure for the platinum/gold/silver tiers.
+  disclosure for the paid Network / Featured / Priority tiers.
 
 ## Email: the working setup
 

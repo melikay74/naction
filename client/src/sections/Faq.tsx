@@ -12,8 +12,8 @@ const FAQS = [
     a: 'We look for quality service, reliability, professionalism, customer care, and a strong community reputation before welcoming a business into the network.',
   },
   {
-    q: 'What do the platinum, gold, and silver badges mean?',
-    a: "Platinum, gold, and silver partners are network members who pay for featured placement, so they appear at the top of their category in that order. They still have to meet the same standards as every other partner, and a sponsor is only listed above others when it actually serves your area. Everyone shown is an independent business you contact directly \u2014 compare them and choose whoever suits you.",
+    q: 'What do the Network, Featured, and Priority partner badges mean?',
+    a: "Network, Featured, and Priority partners are members who pay for placement, so they appear at the top of their category in that order. They still have to meet the same standards as every other partner, and a sponsor is only listed above others when it actually serves your area. Everyone shown is an independent business you contact directly \u2014 compare them and choose whoever suits you.",
   },
   {
     q: 'What if there are no partners in my zip code yet?',

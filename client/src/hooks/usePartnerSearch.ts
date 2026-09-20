@@ -108,6 +108,8 @@ export function usePartnerSearch() {
               results: {
                 ...prev.results,
                 [category]: {
+                  // Load-more pages carry an empty spotlight; keep the first page's.
+                  spotlight: current.spotlight,
                   items: [...current.items, ...next.items],
                   total: next.total,
                   hasMore: next.hasMore,

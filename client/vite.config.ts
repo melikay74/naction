@@ -13,6 +13,10 @@ export default defineConfig({
         target: `http://localhost:${process.env.API_PORT ?? 3011}`,
         changeOrigin: true,
       },
+      '/logos': {
+        target: `http://localhost:${process.env.API_PORT ?? 3011}`,
+        changeOrigin: true,
+      },
     },
   },
 });

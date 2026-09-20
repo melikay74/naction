@@ -1,7 +1,7 @@
 import express from 'express';
 import fs from 'node:fs';
 import path from 'node:path';
-import { CLIENT_DIST, SITE_ROOT } from './paths.js';
+import { CLIENT_DIST, LOGOS_DIR, SITE_ROOT } from './paths.js';
 import { searchPartners } from './partners.js';
 import { regionLabelForZip } from './regions.js';
 import { saveApplication } from './applications.js';
@@ -107,6 +107,10 @@ app.post('/api/apply', rateLimit({ windowMs: 60 * 60 * 1000, max: 5 }), async (r
     next(err);
   }
 });
+
+// Partner logos come from the data directory, not the client build, so adding
+// one is an upload rather than a redeploy. Vite proxies /logos here in dev.
+app.use('/logos', express.static(LOGOS_DIR, { maxAge: '1d', index: false }));
 
 // Serve the built client in production; in dev, Vite serves it and proxies /api here.
 if (fs.existsSync(CLIENT_DIST)) {

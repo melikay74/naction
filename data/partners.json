@@ -1,5 +1,5 @@
 {
-  "_readme": "PLACEHOLDER DATA. Every record below is fictional and marked \"seed\": true, with an example.com website. Replace this file with the real partner directory before launch. The server re-reads this file whenever it changes on disk, so no restart is needed after editing. Fields: id (unique), category (tow|repair|legal), name, phone, website, city, zips (exact zips served, ranked first), regions (LA|SD|IE|CENTRAL|BAY|SAC|NORTH), statewide (bool), tier (platinum|gold|silver \u2014 paid membership, best first, max 3 per tier per category; sponsors that serve the searched area lead results, but a statewide-only sponsor never outranks a local partner).",
+  "_readme": "PLACEHOLDER DATA. Every record below is fictional and marked \"seed\": true, with an example.com website. Replace this file with the real partner directory before launch. The server re-reads this file whenever it changes on disk, so no restart is needed after editing. Fields: id (unique), category (tow|repair|legal), name, phone, website, city, zips (exact zips served, ranked first), regions (LA|SD|IE|CENTRAL|BAY|SAC|NORTH), statewide (bool), tier (network|featured|priority — paid membership, best first, one per tier per category; sponsors that serve the searched area lead results, but a statewide-only sponsor never outranks a local partner), address (one line, shown from priority up), logo (filename in data/logos/, shown from featured up), socials (platform: handle or full URL, in display order; featured shows the first two, network all of them). The server only sends the fields a tier entitles, so extra fields on a free listing are harmless but invisible.",
   "partners": [
     {
       "id": "tow-la-001",
@@ -17,8 +17,15 @@
       "regions": [
         "LA"
       ],
-      "tier": "gold",
-      "seed": true
+      "tier": "featured",
+      "seed": true,
+      "address": "5405 Ventura Blvd, Los Angeles, CA 90210",
+      "socials": {
+        "instagram": "westsidetowandreco",
+        "facebook": "westsidetowandreco",
+        "linkedin": "westsidetowandreco"
+      },
+      "logo": "tow-la-001.png"
     },
     {
       "id": "tow-la-002",
@@ -35,8 +42,20 @@
       "regions": [
         "LA"
       ],
-      "tier": "platinum",
-      "seed": true
+      "tier": "network",
+      "seed": true,
+      "address": "891 S Figueroa St, Los Angeles, CA 90210",
+      "socials": {
+        "instagram": "anchortowinglosang",
+        "facebook": "anchortowinglosang",
+        "yelp": "https://www.yelp.com/biz/anchortowinglosang",
+        "x": "anchortowinglosang",
+        "youtube": "anchortowinglosang",
+        "linkedin": "anchortowinglosang",
+        "google": "Anchor Towing Los Angeles",
+        "tiktok": "anchortowinglosang"
+      },
+      "logo": "tow-la-002.png"
     },
     {
       "id": "tow-la-003",
@@ -52,8 +71,9 @@
       "regions": [
         "LA"
       ],
-      "tier": "silver",
-      "seed": true
+      "tier": "priority",
+      "seed": true,
+      "address": "714 S Figueroa St, Beverly Hills, CA 90210"
     },
     {
       "id": "tow-la-004",
@@ -142,8 +162,15 @@
       "regions": [
         "LA"
       ],
-      "tier": "gold",
-      "seed": true
+      "tier": "featured",
+      "seed": true,
+      "address": "7204 El Camino Real, Los Angeles, CA 90210",
+      "socials": {
+        "instagram": "sunsetcollisioncen",
+        "facebook": "sunsetcollisioncen",
+        "x": "sunsetcollisioncen"
+      },
+      "logo": "repair-la-001.png"
     },
     {
       "id": "repair-la-002",
@@ -155,8 +182,9 @@
       "regions": [
         "LA"
       ],
-      "tier": "silver",
-      "seed": true
+      "tier": "priority",
+      "seed": true,
+      "address": "4043 S Figueroa St, Pasadena, CA 95514"
     },
     {
       "id": "repair-la-003",
@@ -168,8 +196,20 @@
       "regions": [
         "LA"
       ],
-      "tier": "platinum",
-      "seed": true
+      "tier": "network",
+      "seed": true,
+      "address": "7055 W Pico Blvd, Culver City, CA 95632",
+      "socials": {
+        "instagram": "culvercraftcollisi",
+        "facebook": "culvercraftcollisi",
+        "x": "culvercraftcollisi",
+        "tiktok": "culvercraftcollisi",
+        "google": "Culver Craft Collision",
+        "youtube": "culvercraftcollisi",
+        "yelp": "https://www.yelp.com/biz/culvercraftcollisi",
+        "linkedin": "culvercraftcollisi"
+      },
+      "logo": "repair-la-003.png"
     },
     {
       "id": "repair-la-004",
@@ -221,8 +261,15 @@
       "regions": [
         "LA"
       ],
-      "tier": "gold",
-      "seed": true
+      "tier": "featured",
+      "seed": true,
+      "address": "3722 W Pico Blvd, Los Angeles, CA 90210",
+      "socials": {
+        "instagram": "alvarezandcoleinju",
+        "facebook": "alvarezandcoleinju",
+        "yelp": "https://www.yelp.com/biz/alvarezandcoleinju"
+      },
+      "logo": "legal-la-001.png"
     },
     {
       "id": "legal-la-002",
@@ -234,8 +281,9 @@
       "regions": [
         "LA"
       ],
-      "tier": "silver",
-      "seed": true
+      "tier": "priority",
+      "seed": true,
+      "address": "2281 N Harbor Blvd, Woodland Hills, CA 94433"
     },
     {
       "id": "legal-la-003",
@@ -247,8 +295,20 @@
       "regions": [
         "LA"
       ],
-      "tier": "platinum",
-      "seed": true
+      "tier": "network",
+      "seed": true,
+      "address": "2463 Fulton Ave, Los Angeles, CA 91964",
+      "socials": {
+        "instagram": "marshandokonkwotri",
+        "facebook": "marshandokonkwotri",
+        "yelp": "https://www.yelp.com/biz/marshandokonkwotri",
+        "youtube": "marshandokonkwotri",
+        "tiktok": "marshandokonkwotri",
+        "x": "marshandokonkwotri",
+        "google": "Marsh & Okonkwo Trial Lawyers",
+        "linkedin": "marshandokonkwotri"
+      },
+      "logo": "legal-la-003.png"
     },
     {
       "id": "legal-la-004",
@@ -288,7 +348,6 @@
       "regions": [
         "SD"
       ],
-      "tier": "gold",
       "seed": true
     },
     {
@@ -301,7 +360,6 @@
       "regions": [
         "SD"
       ],
-      "tier": "platinum",
       "seed": true
     },
     {
@@ -341,7 +399,6 @@
       "regions": [
         "SD"
       ],
-      "tier": "gold",
       "seed": true
     },
     {
@@ -354,7 +411,6 @@
       "regions": [
         "SD"
       ],
-      "tier": "platinum",
       "seed": true
     },
     {
@@ -382,7 +438,6 @@
       "regions": [
         "SD"
       ],
-      "tier": "gold",
       "seed": true
     },
     {
@@ -395,7 +450,6 @@
       "regions": [
         "SD"
       ],
-      "tier": "platinum",
       "seed": true
     },
     {
@@ -424,7 +478,6 @@
       "regions": [
         "BAY"
       ],
-      "tier": "silver",
       "seed": true
     },
     {
@@ -437,7 +490,6 @@
       "regions": [
         "BAY"
       ],
-      "tier": "platinum",
       "seed": true
     },
     {
@@ -466,7 +518,6 @@
       "regions": [
         "BAY"
       ],
-      "tier": "gold",
       "seed": true
     },
     {
@@ -479,7 +530,6 @@
       "regions": [
         "BAY"
       ],
-      "tier": "platinum",
       "seed": true
     },
     {
@@ -504,7 +554,6 @@
       "regions": [
         "BAY"
       ],
-      "tier": "gold",
       "seed": true
     },
     {
@@ -517,7 +566,6 @@
       "regions": [
         "BAY"
       ],
-      "tier": "platinum",
       "seed": true
     },
     {
@@ -534,7 +582,6 @@
       "regions": [
         "SAC"
       ],
-      "tier": "silver",
       "seed": true
     },
     {
@@ -559,7 +606,6 @@
       "regions": [
         "SAC"
       ],
-      "tier": "silver",
       "seed": true
     },
     {
@@ -584,7 +630,6 @@
       "regions": [
         "SAC"
       ],
-      "tier": "silver",
       "seed": true
     },
     {
@@ -645,7 +690,6 @@
       "regions": [
         "IE"
       ],
-      "tier": "silver",
       "seed": true
     },
     {
@@ -716,7 +760,6 @@
       "website": "https://example.com",
       "city": "Statewide",
       "statewide": true,
-      "tier": "gold",
       "seed": true,
       "note": "Dispatches statewide, 24/7."
     },
@@ -728,7 +771,6 @@
       "website": "https://example.com",
       "city": "Statewide",
       "statewide": true,
-      "tier": "silver",
       "seed": true,
       "note": "Affiliate shops in most California metros."
     },

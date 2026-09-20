@@ -45,6 +45,9 @@ mkdir -p "$OUT/server" "$OUT/client" "$OUT/data"
 cp -R server/dist "$OUT/server/dist"
 cp -R client/dist "$OUT/client/dist"
 cp data/partners.json "$OUT/data/partners.json"
+# Logos ship beside the data so a first deploy has them; on the host they live
+# in $NACTION_DATA_DIR/logos/ and later additions are uploads, not redeploys.
+cp -R data/logos "$OUT/data/logos"
 
 # Marks server/dist/*.js as ES modules. The bundle root stays CommonJS so
 # Passenger can load app.js.

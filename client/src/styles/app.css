@@ -359,6 +359,37 @@
   gap: 12px;
 }
 
+.column-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* A single category gets the whole width, so its cards flow in rows rather
+   than as one tall stack. Ranking still reads left-to-right, top-to-bottom.
+   The paid tiers take the first row by themselves — two wider cards — and
+   free partners start on the row beneath. */
+.results-grid-single .column-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 16px;
+  align-items: start;
+}
+
+.results-grid-single .column-cards-sponsored {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 640px) {
+  .results-grid-single .column-cards-sponsored {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.results-grid-single .result-column > .btn {
+  align-self: flex-start;
+}
+
 .column-head {
   display: flex;
   align-items: center;
@@ -385,12 +416,39 @@
 }
 
 .partner-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  height: 100%;
   background: var(--color-bg);
   border: 1px solid var(--color-neutral-200);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   padding: 18px 20px;
   transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.partner-card .badge-row {
+  margin-bottom: 0;
+}
+
+.partner-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  align-self: stretch;
+}
+
+/* Logos are whatever shape the business supplies; contain, never crop. */
+.partner-logo {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--color-neutral-200);
 }
 
 .partner-card:hover {
@@ -407,7 +465,8 @@
   margin-bottom: 4px;
 }
 
-.partner-name:hover {
+/* Only a linked name (tiers with a website) reacts to hover; a plain span stays put. */
+a.partner-name:hover {
   color: var(--color-accent-700);
   text-decoration: none;
 }
@@ -415,7 +474,58 @@
 .partner-meta {
   font-size: 14px;
   color: var(--color-neutral-600);
-  margin-bottom: 12px;
+}
+
+.partner-address,
+.partner-website {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--color-neutral-700);
+  line-height: 1.4;
+}
+
+.partner-address svg,
+.partner-website svg {
+  flex: none;
+  color: var(--color-neutral-500);
+}
+
+.partner-address:hover,
+.partner-website:hover {
+  color: var(--color-accent-700);
+}
+
+.social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 2px 0 0;
+  padding: 0;
+}
+
+/* Icon-only, so the target is generous and the platform name lives in the tooltip and aria-label. */
+.social-links a {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--color-neutral-200);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-700);
+}
+
+.social-links a:hover {
+  border-color: var(--color-accent-300);
+  background: var(--color-accent-100);
+  color: var(--color-accent-800);
+}
+
+.social-links svg {
+  display: block;
 }
 
 .partner-phone {
@@ -452,50 +562,225 @@
 }
 
 /* ── membership tiers ──────────────────────────────────────────────────────
-   Literal metallics are illegible on white, so gold is a deep amber and silver
-   a slate grey, both on tinted grounds. Platinum outranks them, and a lighter
-   "platinum" tint would be indistinguishable from silver — so it inverts to a
-   solid dark chip instead. Dark beats tinted beats tinted, which reads as a
-   podium at a glance.
+   Three paid tiers, best first: network (Network Partner), featured (Get
+   Featured), priority (Get Priority). Cool-to-warm ladder: teal, indigo, then
+   vermillion for the top tier — the only warm colour on the page, so a
+   Network Partner card is unmissable. The tinted chips sit on pale grounds;
+   the top chip inverts to solid so it reads as the podium.
 
-   Every pairing checked against its own background: badge text 11.2:1,
-   6.9:1 and 8.0:1; card edges 12.6:1, 3.3:1 and 3.0:1 — all clear of WCAG AA.
-   Each badge also carries a word ("Platinum partner"), so colour is never the
-   only signal. */
+   Vermillion is #e34234 on the card edges (4.1:1 on white, fine for a
+   non-text edge) but one step deeper, #cf3524, behind the badge text so white
+   on it clears 4.5:1 — true vermillion falls just short. Badge text checked at
+   5.0:1, 6.3:1 and 4.8:1 against their own backgrounds. Each badge also
+   carries a word ("Network partner"), so colour is never the only signal. The
+   same classes style the membership panel in the apply section, so a
+   business sees exactly the badge it is buying. */
 
-.badge-platinum {
-  background: #2b3440;
-  color: #eef2f7;
+.badge-network {
+  background: #cf3524;
+  color: #ffffff;
 }
 
-.badge-gold {
-  background: #fbf3df;
-  color: #6b4f10;
+.badge-featured {
+  background: #e4e3fb;
+  color: #4338ca;
 }
 
-.badge-silver {
-  background: #f1f3f5;
-  color: #404b57;
+.badge-priority {
+  background: #d6f5ef;
+  color: #0b756c;
 }
 
 /* A left edge so tier reads while scanning a column, not just on the badge. */
-.partner-card-platinum,
-.partner-card-gold,
-.partner-card-silver {
+.partner-card-network,
+.partner-card-featured,
+.partner-card-priority {
   border-left-width: 3px;
   border-left-style: solid;
 }
 
-.partner-card-platinum {
-  border-left-color: #2b3440;
+.partner-card-network {
+  border-left-color: #e34234;
 }
 
-.partner-card-gold {
-  border-left-color: #b8860b;
+.partner-card-featured {
+  border-left-color: #6366f1;
 }
 
-.partner-card-silver {
-  border-left-color: #8b95a1;
+.partner-card-priority {
+  border-left-color: #0d9488;
+}
+
+/* ── network partner spotlight ─────────────────────────────────────────────
+   The top membership buys a full-width card in its own band above the
+   columns. Prominence comes from size, isolation and elevation — the same
+   white card at shadow-lg with the network edge — rather than a coloured
+   ground that would fight the logo and the phone number. */
+
+.spotlight {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.spotlight-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.spotlight-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 17px;
+  margin: 0;
+}
+
+.spotlight-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: clamp(18px, 3vw, 32px);
+  align-items: start;
+  background: var(--color-bg);
+  border: 1px solid var(--color-neutral-200);
+  border-left: 6px solid #e34234;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: clamp(20px, 3vw, 28px) clamp(20px, 3vw, 32px);
+}
+
+.spotlight-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Inline with the name, not a column of its own. */
+.spotlight-logo {
+  width: 64px;
+  height: 64px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid var(--color-neutral-200);
+  overflow: hidden;
+}
+
+.spotlight-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 6px;
+}
+
+.spotlight-logo-fallback {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 28px;
+  color: var(--color-neutral-400);
+}
+
+.spotlight-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+}
+
+.spotlight-kicker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.spotlight-category {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-neutral-600);
+}
+
+.spotlight-name {
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: clamp(20px, 2.4vw, 26px);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.spotlight-contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+}
+
+.spotlight-phone {
+  font-size: 19px;
+}
+
+.spotlight-card .partner-address,
+.spotlight-card .partner-website {
+  font-size: 15px;
+}
+
+/* Desktop shows the QR; a phone cannot scan its own screen, so it gets the button instead. */
+.spotlight-save {
+  display: none;
+  margin-top: 4px;
+}
+
+.contact-qr {
+  margin: 0;
+  width: 112px;
+  text-align: center;
+}
+
+.contact-qr-code {
+  width: 112px;
+  height: 112px;
+  border-radius: 8px;
+  border: 1px solid var(--color-neutral-200);
+  overflow: hidden;
+}
+
+.contact-qr-code svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.contact-qr figcaption {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--color-neutral-600);
+}
+
+@media (max-width: 700px) {
+  .spotlight-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .spotlight-logo {
+    width: 52px;
+    height: 52px;
+  }
+
+  .contact-qr {
+    display: none;
+  }
+
+  .spotlight-save {
+    display: inline-flex;
+  }
 }
 
 .empty {
@@ -829,6 +1114,103 @@
   place-items: center;
   margin: 0 auto 18px;
   font-size: 26px;
+}
+
+/* ── membership panel ──────────────────────────────────────────────────────
+   Sits above the navy phone panel in the apply column. It is a plain .card —
+   hairline border, small shadow — so the weight order reads form (shadow-lg)
+   > memberships > phone panel, and the navy block stays the one deliberate
+   contrast in the column. Radius and padding match .phone-panel so the two
+   stack as a pair.
+
+   Rows are divided by rules rather than nested cards: four boxes inside a box
+   in a 0.9fr column is fussy. Each paid row carries the same left edge and
+   badge as its partner cards in the results, so the panel doubles as a
+   preview of what the business is buying. */
+
+.tiers-panel {
+  gap: 6px;
+  border-radius: var(--radius-lg);
+  padding: clamp(24px, 3vw, 32px);
+  margin-bottom: 20px;
+}
+
+.tiers-panel h3 {
+  font-size: 21px;
+  margin: 0;
+}
+
+.tiers-panel-content {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.tier {
+  padding: 14px 0 14px 14px;
+  border-left: 3px solid var(--color-neutral-300);
+}
+
+.tier + .tier {
+  border-top: 1px solid var(--color-divider);
+}
+
+.tier:first-child {
+  padding-top: 0;
+}
+
+.tier:last-child {
+  padding-bottom: 0;
+}
+
+/* Edge colours mirror .partner-card-* exactly. */
+.tier-network {
+  border-left-color: #e34234;
+}
+
+.tier-featured {
+  border-left-color: #6366f1;
+}
+
+.tier-priority {
+  border-left-color: #0d9488;
+}
+
+.tier-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.tier-head h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 1.3;
+  margin: 0;
+  color: var(--color-text);
+}
+
+.tier-price {
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-neutral-600);
+  white-space: nowrap;
+}
+
+.tier .badge {
+  margin-bottom: 8px;
+}
+
+.tier-desc {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-neutral-700);
 }
 
 .phone-panel {

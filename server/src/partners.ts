@@ -1,8 +1,9 @@
 import fs from 'node:fs/promises';
-import { PARTNERS_FILE } from './paths.js';
+import path from 'node:path';
+import { LOGOS_DIR, PARTNERS_FILE } from './paths.js';
 import { regionForZip } from './regions.js';
 import { MAX_PER_TIER, TIERS, isTier } from './types.js';
-import type { Category, CategoryPage, Partner, PartnerResult, Tier } from './types.js';
+import type { Category, CategoryPage, Partner, PartnerResult, Social, Tier } from './types.js';
 
 let cache: { partners: Partner[]; mtimeMs: number } | null = null;
 
@@ -36,9 +37,33 @@ export async function loadPartners(): Promise<Partner[]> {
   if (!Array.isArray(parsed.partners)) {
     throw new Error('partners.json must contain a "partners" array');
   }
-  const partners = enforceTierCaps(parsed.partners);
+  const partners = await checkLogos(enforceTierCaps(parsed.partners));
   cache = { partners, mtimeMs: stat.mtimeMs };
   return partners;
+}
+
+/**
+ * Drops any `logo` whose file is missing from data/logos/, with a warning.
+ * Checked once per load, not per request, and never fatal: a typo in the JSON
+ * should cost one logo, not the search.
+ */
+async function checkLogos(partners: Partner[]): Promise<Partner[]> {
+  return Promise.all(
+    partners.map(async (partner) => {
+      if (!partner.logo) return partner;
+      const file = path.basename(partner.logo);
+      try {
+        await fs.access(path.join(LOGOS_DIR, file));
+        return { ...partner, logo: file };
+      } catch {
+        console.warn(
+          `[naction] partner "${partner.id}" lists logo "${partner.logo}" but ` +
+            `${path.join(LOGOS_DIR, file)} does not exist — showing it without a logo.`,
+        );
+        return { ...partner, logo: undefined };
+      }
+    }),
+  );
 }
 
 /**
@@ -86,7 +111,7 @@ function enforceTierCaps(partners: Partner[]): Partner[] {
 const BAND = { zip: 0, region: 1, statewide: 2 } as const;
 
 /** Membership rank, best first. Untiered partners sort after every tier. */
-const TIER_RANK: Record<Tier, number> = { platinum: 0, gold: 1, silver: 2 };
+const TIER_RANK: Record<Tier, number> = { network: 0, featured: 1, priority: 2 };
 const tierRank = (tier: Tier | undefined): number => (tier ? TIER_RANK[tier] : TIERS.length);
 
 /**
@@ -106,14 +131,64 @@ function toTel(phone: string): string {
   return `tel:+1${digits.length === 11 && digits.startsWith('1') ? digits.slice(1) : digits}`;
 }
 
+function firstSocials(
+  socials: Partner['socials'],
+  count: number,
+): Partial<Record<Social, string>> | undefined {
+  if (!socials) return undefined;
+  const picked = Object.entries(socials).slice(0, count);
+  return picked.length ? Object.fromEntries(picked) : undefined;
+}
+
+/**
+ * The one place that decides what each membership shows. Fields are copied
+ * in, never spread, so nothing a tier does not entitle can leak to the page:
+ *
+ *   free      name, city, phone
+ *   priority   + street address
+ *   featured  + logo, website, first two socials
+ *   network   + every social (and the client adds the QR code)
+ */
+function toResult(partner: Partner, match: PartnerResult['match']): PartnerResult {
+  const base: PartnerResult = {
+    id: partner.id,
+    category: partner.category,
+    name: partner.name,
+    city: partner.city,
+    phone: partner.phone,
+    tel: toTel(partner.phone),
+    tier: partner.tier,
+    note: partner.note,
+    match,
+  };
+  const logo = partner.logo ? `/logos/${partner.logo}` : undefined;
+
+  switch (partner.tier) {
+    case 'network':
+      return { ...base, address: partner.address, logo, website: partner.website, socials: partner.socials };
+    case 'featured':
+      return {
+        ...base,
+        address: partner.address,
+        logo,
+        website: partner.website,
+        socials: firstSocials(partner.socials, 2),
+      };
+    case 'priority':
+      return { ...base, address: partner.address };
+    default:
+      return base;
+  }
+}
+
 /**
  * Everything in `category` that serves `zip`, best first.
  *
  * Two orderings combine. Paid sponsors that actually cover the area lead the
- * column, gold before silver. Everyone else follows by proximity — an explicit
- * zip listing, then a region match, then statewide — with tier only breaking
- * ties inside a band. A statewide-only sponsor therefore keeps its badge but
- * never outranks a partner that truly serves the caller's zip.
+ * column, Network Partner before Featured before Priority. Everyone else follows
+ * by proximity — an explicit zip listing, then a region match, then statewide —
+ * with tier only breaking ties inside a band. A statewide-only sponsor therefore
+ * keeps its badge but never outranks a partner that truly serves the caller's zip.
  *
  * The order is total and stable, so paging with offset never repeats or skips.
  */
@@ -130,7 +205,7 @@ function rankedMatches(partners: Partner[], category: Category, zip: string): Pa
     else if (partner.statewide) match = 'statewide';
     if (!match) continue;
 
-    matched.push({ ...partner, tel: toTel(partner.phone), match });
+    matched.push(toResult(partner, match));
   }
 
   matched.sort((a, b) => {
@@ -140,7 +215,7 @@ function rankedMatches(partners: Partner[], category: Category, zip: string): Pa
     if (promotedA !== promotedB) return promotedA ? -1 : 1;
 
     if (promotedA) {
-      // Inside the sponsored block: platinum, gold, silver, then closest, then name.
+      // Inside the sponsored block: network, featured, priority, then closest, then name.
       return (
         tierRank(a.tier) - tierRank(b.tier) ||
         BAND[a.match] - BAND[b.match] ||
@@ -170,12 +245,20 @@ export async function searchPartners(
   const results: Partial<Record<Category, CategoryPage>> = {};
 
   for (const category of categories) {
-    const all = rankedMatches(partners, category, zip);
-    const items = all.slice(offset, offset + limit);
+    const ranked = rankedMatches(partners, category, zip);
+
+    // Network Partners covering the area leave the column for the spotlight
+    // band. They are always at the head of the ranking, so splitting them off
+    // keeps the rest a stable list that offset paging can walk. A load-more
+    // call (offset > 0) gets an empty spotlight so the client never re-adds it.
+    const spotlight = ranked.filter((p) => p.tier === 'network' && isPromoted(p));
+    const rest = ranked.slice(spotlight.length);
+    const items = rest.slice(offset, offset + limit);
     results[category] = {
+      spotlight: offset === 0 ? spotlight : [],
       items,
-      total: all.length,
-      hasMore: offset + items.length < all.length,
+      total: rest.length,
+      hasMore: offset + items.length < rest.length,
     };
   }
 

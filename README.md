@@ -61,7 +61,9 @@ photo. Measured Cumulative Layout Shift is 0.
 ## Privacy, cookies, and fonts
 
 **The site currently sets no cookies at all** — no analytics, no advertising, no third-party tracking —
-and makes **zero external requests**. Fonts are self-hosted from `client/public/fonts/` (regenerate with
+and makes **zero external requests** on load. (The QR codes on Network Partner cards are generated in
+the browser by the bundled `qrcode` package; the map, website and social links are ordinary links that
+only leave the site when tapped.) Fonts are self-hosted from `client/public/fonts/` (regenerate with
 `node scripts/fetch-fonts.mjs public/fonts`), so no visitor IP is disclosed to Google or anyone else.
 
 Because nothing is tracked, the consent banner **deliberately does not render**. Putting a modal in front
@@ -127,24 +129,51 @@ Two things to raise with a lawyer, neither of which is a coding matter:
   "city": "Los Angeles",
   "zips": ["90210", "90211"],      // optional: exact zips served — ranked first
   "regions": ["LA"],               // LA | SD | IE | CENTRAL | BAY | SAC | NORTH
-  "statewide": false,              // shown anywhere in CA, as a last resort
-  "tier": "gold"                   // optional: "platinum" | "gold" | "silver" — paid membership
+  "statewide": false,              // true = appears in every search, after closer partners; no badge
+  "tier": "featured",              // optional: "network" | "featured" | "priority" — paid membership
+  "address": "1234 W Pico Blvd, Los Angeles, CA 90015",   // one line, rendered verbatim
+  "logo": "tow-la-001.png",        // file in data/logos/ — served at /logos/, no rebuild needed
+  "socials": {                     // platform → @handle, or a full URL for Yelp/Google
+    "instagram": "westsidetow",    // key order is display order
+    "facebook": "westsidetow",
+    "yelp": "https://www.yelp.com/biz/westside-tow"
+  }
 }
 ```
+
+**What each tier shows** is decided by the server, in `toResult()` in
+[`server/src/partners.ts`](server/src/partners.ts). It copies only the entitled fields into the
+response, so an address typed into a free listing never reaches the page.
+
+| tier                | shown on the card                                                        |
+| ------------------- | ------------------------------------------------------------------------ |
+| *(none)* Get Listed | name, city, phone                                                        |
+| `priority`           | + street address (linked to a map)                                       |
+| `featured`          | + logo, website, first two socials                                       |
+| `network`           | + every social, a vCard QR code — in a full-width band above the columns |
+
+Supported social keys: `instagram`, `facebook`, `x`, `tiktok`, `youtube`, `linkedin`, `yelp`, `google`.
+Handles are stored bare; the client builds the profile URL. Yelp and Google take a full URL (or, for
+Google, the business name, which becomes a Maps search).
+
+Network Partners that cover the searched area are returned in `spotlight` rather than `items`, and the
+client renders them in one band across all selected categories. A statewide-only Network Partner is
+**not** spotlighted — it stays in its column in proximity order, per the rule below.
 
 **Matching** runs on proximity bands — an exact `zips` listing beats a `regions` match, which beats a
 `statewide` partner. Zip → region mapping lives in [`server/src/regions.ts`](server/src/regions.ts).
 
-**Membership tiers** sit on top of that. Platinum, gold, and silver partners lead their result column
-in that order —
+**Membership tiers** sit on top of that. Network Partner, Get Featured, and Get Priority members
+(`network`, `featured`, `priority`) lead their result column in that order —
 but **only if they actually cover the searched area** (a `zips` or `regions` match). A statewide-only
 sponsor keeps its badge and stays in normal proximity order, so it can never outrank a partner that truly
 serves the caller's zip. Someone stranded after a crash should not be routed past a closer option. Below
 the sponsored block, proximity decides and tier only breaks ties inside a band.
 
-**At most 3 partners per tier per category** (27 sponsored slots: platinum, gold, and silver × towing,
-repair, legal). The server enforces this on load — extras beyond the third, and any unrecognised tier value, are
-logged as a warning and shown untiered rather than crashing the API. Watch the server log after editing
+**Each tier is sold once per category** — one Network Partner, one Featured, one Priority, for each of
+towing, repair and legal: nine sponsored slots statewide. The server enforces this on load — a second
+partner claiming a taken slot, and any unrecognised tier value, are logged as a warning and shown
+untiered rather than crashing the API. Watch the server log after editing
 `partners.json`.
 
 The order stays total and stable, so paging with `offset` never repeats or skips a row.
@@ -161,10 +190,12 @@ category, that column's current offset).
   "zip": "90210",
   "regionLabel": "the Los Angeles area",
   "results": {
-    "tow": { "items": [ /* … */ ], "total": 10, "hasMore": true }
+    "tow": { "spotlight": [ /* network partners */ ], "items": [ /* … */ ], "total": 10, "hasMore": true }
   }
 }
 ```
+
+`total` and paging cover `items` only; `spotlight` is returned empty when `offset > 0`.
 
 `POST /api/apply` — validates the application, rejects a filled honeypot field, rate-limits to 5 per hour
 per IP, and appends to `data/applications.json` via a temp-file-and-rename write so concurrent

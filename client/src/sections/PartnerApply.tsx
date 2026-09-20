@@ -1,6 +1,30 @@
 import { usePartnerApplication } from '../hooks/usePartnerApplication';
 import { config } from '../config';
-import { CATEGORIES, CATEGORY_LABELS, type Category } from '../types';
+import { CATEGORIES, CATEGORY_LABELS, TIER_LABELS, type Category, type Tier } from '../types';
+
+/** The memberships on offer, cheapest first. `tier` is the badge a member earns in search results. */
+const MEMBERSHIPS: { name: string; price: string; description: string; tier?: Tier }[] = [
+  { name: 'Get Listed', price: 'Free', description: 'Your business name, city and phone number, listed in the network.' },
+  {
+    name: 'Get Priority',
+    price: '$29.99/mo',
+    description: 'Ranked above free listings, with your street address linked to directions.',
+    tier: 'priority',
+  },
+  {
+    name: 'Get Featured',
+    price: '$49.99/mo',
+    description: 'Adds your logo, website and two social profiles, ranked above Priority.',
+    tier: 'featured',
+  },
+  {
+    name: 'Network Partner',
+    price: '$99.99/mo',
+    description:
+      'A full-width spotlight above all other results with your logo, every social profile and a scan-to-save contact card.',
+    tier: 'network',
+  },
+];
 
 export function PartnerApply() {
   const { form, update, submit, submitting, submitted, error, fieldError, errorFor } =
@@ -151,6 +175,25 @@ export function PartnerApply() {
           )}
 
           <div>
+            <div className="card tiers-panel">
+              <span className="card-kicker">Membership</span>
+              <h3>Choose a membership</h3>
+              <p className="card-body">Four tiers with different features and pricing.</p>
+              <ul className="tiers-panel-content">
+                {MEMBERSHIPS.map((m) => (
+                  <li key={m.name} className={`tier${m.tier ? ` tier-${m.tier}` : ''}`}>
+                    <div className="tier-head">
+                      <h4>{m.name}</h4>
+                      <span className="tier-price">{m.price}</span>
+                    </div>
+                    {/* The badge a member earns in search results — the same component victims see. */}
+                    {m.tier && <span className={`badge badge-${m.tier}`}>{TIER_LABELS[m.tier]}</span>}
+                    <p className="tier-desc">{m.description}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             <div className="phone-panel">
               <h3>Prefer to talk it through?</h3>
               <p>This line is for businesses joining the network.</p>
@@ -158,7 +201,6 @@ export function PartnerApply() {
                 {config.partnerPhone}
               </a>
             </div>
-
           </div>
         </div>
       </div>
