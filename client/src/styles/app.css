@@ -147,6 +147,32 @@
   }
 }
 
+/* The wordmark and tagline are both `white-space: nowrap`, so the brand
+   lockup cannot shrink to fit — on a 320px phone it pushed the menu button
+   ~30px off the right edge of the screen. Take the width back from the logo,
+   the type and the surrounding spacing rather than letting a script wordmark
+   wrap. Measured at 320px: the row ends 14px clear of the edge. */
+@media (max-width: 380px) {
+  .site-nav {
+    padding-inline: 14px;
+    gap: 10px;
+  }
+  .brand {
+    --brand-size: 42px;
+    gap: 9px;
+  }
+  .brand-name {
+    font-size: 24px;
+  }
+  .brand-tagline {
+    font-size: 9px;
+    letter-spacing: 0.05em;
+  }
+  .site-nav-toggle {
+    padding: 8px;
+  }
+}
+
 .site-nav-links {
   display: flex;
   align-items: center;
@@ -1059,6 +1085,14 @@ a.partner-name:hover {
   align-items: start;
 }
 
+/* The form and the phone panel share the left column: calling instead of
+   filling the form in is the same decision, so the two sit together. */
+.apply-main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 @media (max-width: 900px) {
   .apply-grid {
     grid-template-columns: minmax(0, 1fr);
@@ -1132,7 +1166,6 @@ a.partner-name:hover {
   gap: 6px;
   border-radius: var(--radius-lg);
   padding: clamp(24px, 3vw, 32px);
-  margin-bottom: 20px;
 }
 
 .tiers-panel h3 {
@@ -1147,7 +1180,7 @@ a.partner-name:hover {
 }
 
 .tier {
-  padding: 14px 0 14px 14px;
+  padding: 14px;
   border-left: 3px solid var(--color-neutral-300);
 }
 
@@ -1155,24 +1188,24 @@ a.partner-name:hover {
   border-top: 1px solid var(--color-divider);
 }
 
-.tier:first-child {
-  padding-top: 0;
-}
-
-.tier:last-child {
-  padding-bottom: 0;
-}
-
 /* Edge colours mirror .partner-card-* exactly. */
+.tier-basic {
+  background-color: #f9fafb;
+  border-left-color: var(--color-neutral-300);
+}
+
 .tier-network {
+  background-color: #fff5f4;
   border-left-color: #e34234;
 }
 
 .tier-featured {
+  background-color: #f0f4ff;
   border-left-color: #6366f1;
 }
 
 .tier-priority {
+  background-color: #effcf9;
   border-left-color: #0d9488;
 }
 
@@ -1218,7 +1251,6 @@ a.partner-name:hover {
   color: #fff;
   border-radius: var(--radius-lg);
   padding: clamp(24px, 3vw, 32px);
-  margin-bottom: 20px;
 }
 
 .phone-panel h3 {
@@ -1325,8 +1357,13 @@ a.partner-name:hover {
   max-width: 1200px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) repeat(auto-fit, minmax(160px, 1fr));
-  gap: 40px;
+  /* Contact is an `auto` track, so it is sized by its content rather than
+     given an equal share. Its items must never wrap (see .footer-contact li),
+     and an equal fraction drops below the ~195px they need somewhere around
+     1080px wide. The nav lists take what is left. */
+  grid-template-columns: minmax(0, 1.4fr) auto minmax(0, 1fr) minmax(0, 1fr);
+  row-gap: 40px;
+  column-gap: clamp(24px, 3vw, 40px);
 }
 
 .footer-brand {
@@ -1360,9 +1397,13 @@ a.partner-name:hover {
   flex-direction: column;
   gap: 10px;
   font-size: 15px;
-  /* Last-resort break for an unusually long address. The mobile layout below
-     gives contact details the full width, so this should never fire. */
-  overflow-wrap: anywhere;
+}
+
+/* The phone number, email and website read as single units — a number or an
+   address split across two lines is hard to scan and easy to mistype. The
+   grid track above is sized to fit them, so this cannot cause overflow. */
+.footer-contact li {
+  white-space: nowrap;
 }
 
 .footer a {
@@ -1384,7 +1425,8 @@ a.partner-name:hover {
 @media (max-width: 940px) {
   .footer-inner {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px 20px;
+    row-gap: 28px;
+    column-gap: 20px;
   }
 
   .footer-brand-block,
