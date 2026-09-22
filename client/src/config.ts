@@ -14,7 +14,7 @@ export const config = {
   partnerPhone: '(747) 895-9638',
   partnerPhoneHref: 'tel:+17478959638',
 
-  email: 'jose@nactionadvisors.com',
+  email: 'art@nactionadvisors.com',
   website: 'www.nactionadvisors.com',
   websiteHref: 'https://www.nactionadvisors.com',
 

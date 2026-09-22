@@ -112,7 +112,9 @@ Two things to raise with a lawyer, neither of which is a coding matter:
    - `service-area.png` — California service-area map.
    - Photography: `hero.jpg`, `service-tow.jpg`, `service-repair.jpg`, `service-legal.jpg`.
 
-4. **Configure email.** Applications append to `data/applications.json` and are emailed when SMTP is
+4. **Payments** are not built yet — the plan is in [TODO-stripe.md](TODO-stripe.md).
+
+5. **Configure email.** Applications append to `data/applications.json` and are emailed when SMTP is
    set up — see the email section in [DEPLOY.md](DEPLOY.md). With SMTP unset, the file is still written
    and a warning is logged, so nothing is lost. Email logic lives in
    [`server/src/email.ts`](server/src/email.ts).

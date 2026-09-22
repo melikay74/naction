@@ -448,9 +448,7 @@
   height: 48px;
   flex: none;
   object-fit: contain;
-  border-radius: 8px;
   background: #fff;
-  border: 1px solid var(--color-neutral-200);
 }
 
 .partner-card:hover {
@@ -1362,8 +1360,8 @@ a.partner-name:hover {
   flex-direction: column;
   gap: 10px;
   font-size: 15px;
-  /* The email and website are long unbroken strings — let them break rather
-     than push the footer column past a phone's viewport. */
+  /* Last-resort break for an unusually long address. The mobile layout below
+     gives contact details the full width, so this should never fire. */
   overflow-wrap: anywhere;
 }
 
@@ -1373,6 +1371,26 @@ a.partner-name:hover {
 
 .footer a:hover {
   color: #fff;
+}
+
+/* On a phone the four-column grid squeezes every column to ~150px, which
+   breaks the phone number, email and URL across two lines each. Give the
+   brand and contact details the full width — they are the parts that must not
+   break — and let the two nav lists share a row, since their labels are short.
+   Contact comes second in the markup — ahead of the nav lists — because on a
+   one-page site those links only point at sections the visitor has already
+   scrolled past. Ordering it in the DOM rather than with CSS `order` keeps
+   the keyboard tab order matching what is on screen. */
+@media (max-width: 940px) {
+  .footer-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 20px;
+  }
+
+  .footer-brand-block,
+  .footer-contact {
+    grid-column: 1 / -1;
+  }
 }
 
 .footer-bottom {

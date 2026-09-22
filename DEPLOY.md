@@ -209,7 +209,7 @@ That appears to be a plan-level restriction. The working configuration:
 | `SMTP_USER` | a **cPanel** mailbox, e.g. `noreply@nactionadvisors.com` |
 | `SMTP_PASS` | that mailbox's password |
 | `SMTP_FROM` | must be an address that **exists at Titan** — see below |
-| `APPLICATIONS_TO` | `jose@nactionadvisors.com` (the Titan inbox) |
+| `APPLICATIONS_TO` | `art@nactionadvisors.com` (the Titan inbox) |
 
 **The trap that cost the most time: `SMTP_FROM` must exist at Titan, not just in cPanel.**
 
@@ -225,7 +225,7 @@ address doesn't exist there:
 
 Two ways to satisfy it:
 
-1. Set `SMTP_FROM` to an address that already exists at Titan (`jose@`), or
+1. Set `SMTP_FROM` to an address that already exists at Titan (`art@`), or
 2. **Better:** create `noreply@` in **Titan** as a mailbox or alias, then use it. Sender callouts are not
    a Titan quirk — other providers do the same, so applicant confirmations to Gmail and Outlook can be
    rejected the same way if the From address isn't genuinely deliverable.

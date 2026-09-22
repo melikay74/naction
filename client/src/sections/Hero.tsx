@@ -6,11 +6,6 @@ interface HeroProps {
   search: PartnerSearch;
 }
 
-/**
- * Design B puts the zip search in the hero, above the fold — the carinsurance.com
- * pattern. Someone who has just had an accident lands and can search
- * immediately, rather than scrolling to a section further down as in design A.
- */
 export function Hero({ search }: HeroProps) {
   const { zip, changeZip, selected, toggleCategory, error, loading, submit } = search;
 

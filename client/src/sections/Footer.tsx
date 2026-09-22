@@ -24,7 +24,7 @@ export function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <div>
+        <div className="footer-brand-block">
           <div className="footer-brand">
             <img src="/logo.png" alt="" width={32} height={32} />
             {config.businessName}
@@ -32,20 +32,7 @@ export function Footer() {
           <p>&ldquo;{config.tagline}&rdquo;</p>
         </div>
 
-        {COLUMNS.map((column) => (
-          <div key={column.title}>
-            <h4>{column.title}</h4>
-            <ul>
-              {column.links.map((link) => (
-                <li key={link.href}>
-                  <a href={link.href}>{link.label}</a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-
-        <div>
+        <div className="footer-contact">
           <h4>Contact</h4>
           <ul>
             <li>
@@ -62,6 +49,19 @@ export function Footer() {
             </li>
           </ul>
         </div>
+        {COLUMNS.map((column) => (
+          <div key={column.title}>
+            <h4>{column.title}</h4>
+            <ul>
+              {column.links.map((link) => (
+                <li key={link.href}>
+                  <a href={link.href}>{link.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+
       </div>
 
       <p className="footer-bottom">
