@@ -78,11 +78,15 @@ export function Privacy() {
         <section>
           <h2>Cookies and analytics</h2>
           <p>
-            {config.analyticsId ? (
+            {config.matomoUrl && config.matomoSiteId ? (
               <>
-                We use analytics cookies to understand how people use the site, and only after you accept
-                them. Declining sets no analytics cookies and does not limit anything on the site. You can
-                change your mind at any time by clearing this site's data in your browser.
+                This site sets <strong>no cookies at all</strong> — no advertising and no third-party
+                tracking. We do measure how the site is used, with analytics software we run on our own
+                server, configured so that it stores nothing on your device and never sets a cookie. It
+                records pages viewed and whether a partner's phone number or website was clicked, so we
+                can tell which services people actually need. It honours your browser's "Do Not Track"
+                setting. Your visit is never shared with an outside analytics company, because there
+                isn't one.
               </>
             ) : (
               <>

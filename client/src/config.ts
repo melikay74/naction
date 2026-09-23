@@ -27,17 +27,26 @@ export const config = {
   serviceAreaImage: '/service-areas-2.jpg',
 
   /**
-   * Google Analytics measurement ID, e.g. 'G-XXXXXXXXXX'.
+   * Self-hosted Matomo, running cookie-free.
    *
-   * Leave null and the site sets NO cookies at all — and the consent banner
-   * stays hidden, because there is nothing to consent to. Set it and the banner
-   * appears, gating the analytics script behind an explicit opt-in.
+   * Both values come from Matomo → Administration → Websites → Manage, and the
+   * tracker stays completely inert until BOTH are set — no script, no request,
+   * no cookie. That is the safe default: an unconfigured build cannot leak a
+   * visit anywhere.
    *
-   * Never load a tracking script outside lib/analytics.ts, or consent stops
-   * meaning anything.
+   *   matomoUrl:    'https://analytics.nactionadvisors.com/'   (trailing slash)
+   *   matomoSiteId: '1'                                        (first site is 1)
+   *
+   * Self-hosted on our own subdomain on purpose: the data never reaches a third
+   * party, so the privacy policy's promise that browsing this site discloses
+   * nothing to an outside company stays literally true. Do not point this at a
+   * hosted analytics service without rewriting that policy.
+   *
+   * Never load a tracking script outside lib/analytics.ts.
    */
-  analyticsId: null as string | null,
+  matomoUrl: 'https://analytics.nactionadvisors.com/' as string | null,
+  matomoSiteId: '1' as string | null,
 
   /** Last substantive change to the privacy policy, shown on /privacy. */
-  privacyUpdated: 'August 13, 2026',
+  privacyUpdated: 'September 23, 2026',
 } as const;

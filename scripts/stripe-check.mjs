@@ -30,7 +30,8 @@ console.log(`\n  Mode: ${isTestMode() ? 'TEST' : '*** LIVE ***'}\n`);
 
 let account;
 try {
-  account = await getStripe().accounts.retrieve();
+  const stripe = await getStripe();
+  account = await stripe.accounts.retrieve();
 } catch (err) {
   console.error(`  ✗ Could not reach Stripe: ${err.message}\n`);
   process.exit(1);

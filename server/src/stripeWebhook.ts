@@ -145,11 +145,23 @@ export function stripeWebhook(): express.Router {
         return;
       }
 
+      let stripe: Stripe;
+      try {
+        stripe = await getStripe();
+      } catch (err) {
+        // The SDK is loaded lazily, so a missing package surfaces here rather
+        // than taking the whole site down at boot. 503 makes Stripe retry, so
+        // events are not lost once the install is fixed.
+        console.error(`[naction] cannot load Stripe: ${err instanceof Error ? err.message : err}`);
+        res.status(503).json({ error: 'Stripe is not available on this server.' });
+        return;
+      }
+
       let event: Stripe.Event;
       try {
         // Verifies the payload really came from Stripe and is recent. Without
         // this, anyone who knows the URL could activate memberships for free.
-        event = getStripe().webhooks.constructEvent(req.body as Buffer, signature, secret);
+        event = stripe.webhooks.constructEvent(req.body as Buffer, signature, secret);
       } catch (err) {
         console.error(
           `[naction] Stripe signature verification failed: ${err instanceof Error ? err.message : err}`,

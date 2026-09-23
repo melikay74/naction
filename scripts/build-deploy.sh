@@ -4,15 +4,23 @@
 #
 #   ./scripts/build-deploy.sh                     -> staging bundle (crawlers blocked, banner shown)
 #   ./scripts/build-deploy.sh production          -> live bundle
-#   ./scripts/build-deploy.sh staging --bundled   -> also ships node_modules
+#   ./scripts/build-deploy.sh staging --slim      -> omit node_modules (needs npm install on the host)
 #
-# --bundled includes express and its dependencies in the zip (+~900 KB), so the
-# host never has to run npm install. Useful when cPanel's "Run NPM Install"
-# button is unavailable or disabled, which happens on some shared plans.
+# node_modules ships INSIDE the bundle by default (+~4 MB), so the host never
+# has to run npm install and deploying is upload-extract-restart, always.
+#
+# That default was chosen the hard way. A slim bundle declares its dependencies
+# but ships none, so adding a package and uploading without clicking "Run NPM
+# Install" leaves the host missing it and Passenger cannot boot — which is how
+# `stripe` once took the whole site down with a 503. The failure is silent at
+# build time and total at run time, and it costs 4 MB to make impossible.
+#
+# --slim restores the old behaviour. Worth it only if upload size genuinely
+# matters; it puts the npm install step back on you, every single deploy.
 #
 # Produces deploy/naction-deploy.zip, ready to upload and extract in cPanel's
-# File Manager. Everything is compiled here, so the server only ever installs
-# express — no TypeScript, Vite, or React on the host.
+# File Manager. Everything is compiled here — no TypeScript, Vite, or React on
+# the host.
 #
 # Two Passenger quirks are handled by the layout this produces:
 #
@@ -27,8 +35,10 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 MODE="${1:-staging}"
-BUNDLED=""
-for arg in "$@"; do [ "$arg" = "--bundled" ] && BUNDLED=1; done
+# Bundled by default — see the note at the top. --bundled is still accepted so
+# older notes and muscle memory keep working; it is now a no-op.
+BUNDLED=1
+for arg in "$@"; do [ "$arg" = "--slim" ] && BUNDLED=""; done
 OUT="deploy/naction"
 
 if [ "$MODE" = "production" ]; then
@@ -68,7 +78,6 @@ require("fs").writeFileSync(process.argv[1] + "/package.json", JSON.stringify({
   engines: { node: ">=18" },
   dependencies: deps,
 }, null, 2) + "\n");
-console.log("    runtime deps: " + Object.keys(deps).join(", "));
 ' "$OUT"
 
 # Passenger's entry point. CommonJS on purpose — see the note at the top.
@@ -89,8 +98,18 @@ import('./server/dist/index.js').catch((err) => {
 JS
 
 if [ -n "$BUNDLED" ]; then
-  echo "==> Installing express into the bundle (no npm install needed on the host)"
-  ( cd "$OUT" && npm install --omit=dev --no-audit --no-fund >/dev/null )
+  echo "==> Installing server dependencies into the bundle (no npm install needed on the host)"
+  # This is the one step that needs the network. Failing here must be loud and
+  # must stop the build: a half-installed node_modules that still zips cleanly
+  # is exactly the silent breakage bundling exists to prevent.
+  if ! ( cd "$OUT" && npm install --omit=dev --no-audit --no-fund >/dev/null ); then
+    echo
+    echo "    npm install failed, so the bundle has no node_modules and is NOT safe to upload." >&2
+    echo "    Check your network and run it again, or build with --slim and click" >&2
+    echo "    Run NPM Install on the host instead." >&2
+    rm -rf deploy
+    exit 1
+  fi
   rm -f "$OUT/package-lock.json"
 fi
 
@@ -109,6 +128,18 @@ fi
 echo
 echo "==> deploy/naction-deploy.zip     ($(du -h deploy/naction-deploy.zip | cut -f1))"
 echo "==> deploy/naction-deploy.tar.gz  ($(du -h deploy/naction-deploy.tar.gz | cut -f1))  <- use this if cPanel flags the zip"
-echo "    mode: $MODE${BUNDLED:+ (node_modules included — skip Run NPM Install)}"
+echo "    mode: $MODE"
+DEPS="$(node -p "Object.keys(require('./server/package.json').dependencies||{}).join(', ')")"
+if [ -n "$BUNDLED" ]; then
+  echo "    deps:  $DEPS (shipped in the bundle — no Run NPM Install needed)"
+else
+  # Slim bundles declare dependencies but ship none, so a package the host has
+  # never installed stops Passenger booting. This warning is the cheapest place
+  # to catch that: it is read on every build, unlike DEPLOY.md.
+  echo "    deps:  $DEPS  — NOT shipped (--slim)"
+  echo "      ^ if that list changed since your last upload, click Run NPM Install BEFORE Restart"
+fi
 echo "    extract INTO the cPanel application root (alongside public/ and tmp/):"
-find "$OUT" -maxdepth 2 -mindepth 1 | sed "s|$OUT/|      |" | sort
+# node_modules' own children are noise now that bundling is the default; the
+# folder itself still shows, so it is obvious the dependencies are in there.
+find "$OUT" -maxdepth 2 -mindepth 1 | grep -v "^$OUT/node_modules/." | sed "s|$OUT/|      |" | sort

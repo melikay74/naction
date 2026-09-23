@@ -91,7 +91,10 @@ Before saving, add two **environment variables**:
 With `STAGING_PASSWORD` set, every request — page, API, and assets alike — returns `401` until the
 browser's login prompt is satisfied. Clear the variable and restart to lift it; no rebuild needed.
 
-Save, then click **Run NPM Install**, then **Restart**.
+Save, then click **Restart**.
+
+You do not need **Run NPM Install** — the bundle ships `node_modules` inside it. (Only if you built
+with `--slim` does the host have to install dependencies itself.)
 
 ## 5b. Email notifications
 
@@ -139,6 +142,13 @@ never leaves your own mail server.
 
 Only needed once you start selling memberships. With these unset the site runs exactly as before —
 the webhook answers 503 and nothing else changes — so you can deploy without them.
+
+**A note on dependencies, since `stripe` is the package that taught this lesson.** Adding it to the
+server and uploading a bundle that shipped no `node_modules` took the whole site down with
+`Cannot find package 'stripe'` — Passenger could not boot the app at all. Two things changed as a
+result: the Stripe SDK is now loaded **lazily**, so a missing package degrades to a broken webhook
+instead of a dead site, and `build-deploy.sh` now **ships `node_modules` by default**, so the host has
+nothing to install. You only need **Run NPM Install** if you deliberately built with `--slim`.
 
 | Variable | Value |
 | --- | --- |
@@ -200,8 +210,15 @@ Submit the partner form once, then confirm the row appears in
 ./scripts/build-deploy.sh
 ```
 
-Upload and extract over `/home/<cpanel-user>/naction/`, then **Restart** in Setup Node.js App. Re-run
-NPM Install only if `express` changed version.
+Upload and extract over `/home/<cpanel-user>/naction/`, then **Restart** in Setup Node.js App.
+
+That is the whole procedure, every time. `node_modules` ships inside the bundle, so there is no
+**Run NPM Install** step to remember and no way to forget it — which is the point, because forgetting
+it once took the site down with `Cannot find package 'stripe'` (see §5c). The zip is ~5.8 MB rather
+than ~1.7 MB; that is the trade.
+
+`./scripts/build-deploy.sh staging --slim` omits `node_modules` if you ever need the smaller upload.
+It puts the npm install step back on you, and the build output says so in its summary.
 
 `naction-data/` is never touched by a redeploy.
 
@@ -323,6 +340,11 @@ extracts both.
 
 **502 / "We're sorry, but something went wrong"** — Passenger couldn't start the app. Check the log path
 shown in Setup Node.js App, and confirm the startup file is exactly `app.js`.
+
+**`Cannot find package 'X'` in the log, site returns 502/503** — the host is missing a dependency, so
+Passenger cannot boot the app at all. Either click **Run NPM Install** then **Restart**, or rebuild
+without `--slim` (the default now ships `node_modules`) and re-upload. This is the failure that took
+the site down once; building normally makes it impossible.
 
 **`Cannot use import statement outside a module`** — the bundle's top-level `package.json` must **not**
 have `"type": "module"`; `server/package.json` must. `build-deploy.sh` sets both correctly, so this means

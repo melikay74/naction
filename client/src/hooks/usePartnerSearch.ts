@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { trackSearch } from '../lib/analytics';
 import { ApiError, searchPartners } from '../lib/api';
 import { CATEGORIES, type Category, type CategoryPage, type PartnerSearchResponse } from '../types';
 
@@ -75,6 +76,14 @@ export function usePartnerSearch() {
         categories,
         results: response.results,
       });
+      // Recorded only on success, so the figure means "searches that returned
+      // something", not "times the button was pressed". A zip that repeatedly
+      // comes back empty is the signal to recruit partners in that area.
+      const found = categories.reduce(
+        (sum, c) => sum + (response.results[c]?.total ?? 0) + (response.results[c]?.spotlight?.length ?? 0),
+        0,
+      );
+      trackSearch(response.zip, categories, found);
     } catch (err) {
       if (err instanceof DOMException && err.name === 'AbortError') return;
       setSearch(null);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  consentRequired,
   loadAnalytics,
   readConsent,
   revokeAnalytics,
@@ -11,10 +12,15 @@ import {
 /**
  * Consent gate for analytics cookies.
  *
- * Deliberately renders nothing when no analytics ID is configured — with no
- * tracking there are no cookies, nothing to consent to, and no reason to put a
- * dialog in front of someone who has just been in a collision. Set
- * config.analyticsId and the banner appears.
+ * Renders nothing in either of the two situations that currently apply:
+ * no analytics configured at all, or analytics running cookie-free. Matomo is
+ * configured for the latter, so today this banner never appears — which is the
+ * point. There is nothing stored on the visitor's device to consent to, and no
+ * reason to put a dialog in front of someone who has just been in a collision.
+ *
+ * It is kept rather than deleted because it is the safeguard that has to come
+ * back the moment cookies do: flip COOKIE_FREE in lib/analytics.ts and this
+ * banner returns automatically, gating the tracker behind an explicit opt-in.
  *
  * Accept and Decline carry equal visual weight, and the script only ever loads
  * on an explicit Accept, so this gates rather than merely informs.
@@ -28,13 +34,19 @@ export function CookieConsent() {
 
   useEffect(() => {
     if (!trackingConfigured()) return;
+    // Cookie-free: start the tracker immediately, with no banner. Nothing is
+    // written to the device, so there is nothing to ask permission for.
+    if (!consentRequired()) {
+      loadAnalytics();
+      return;
+    }
     const stored = readConsent();
     setChoice(stored);
     if (stored === 'accepted') loadAnalytics();
     setReady(true);
   }, []);
 
-  if (!trackingConfigured() || !ready || choice !== null) return null;
+  if (!consentRequired() || !ready || choice !== null) return null;
 
   const decide = (consent: Consent) => {
     writeConsent(consent);

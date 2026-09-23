@@ -1,4 +1,4 @@
-import Stripe from 'stripe';
+import type Stripe from 'stripe';
 import type { Tier } from './types.js';
 
 /**
@@ -23,6 +23,12 @@ import type { Tier } from './types.js';
  * product's default_price at checkout time, so changing what a tier costs is
  * a dashboard edit with no redeploy. Existing subscriptions keep the price
  * they signed up at — Stripe does not reprice them — which is what you want.
+ *
+ * The SDK is imported lazily, and this module must never import it at the top
+ * level. A missing `stripe` package once took the whole site down at boot —
+ * an emergency referral service returning 503 because a subscription library
+ * was not installed. Payments are peripheral to what this site is for, so
+ * they degrade to one failing route instead of taking search down with them.
  */
 
 const PRODUCT_ENV: Record<Tier, string> = {
@@ -37,15 +43,35 @@ export function stripeConfigured(): boolean {
   return Boolean(process.env.STRIPE_SECRET_KEY);
 }
 
-export function getStripe(): Stripe {
+/**
+ * The Stripe client, loading the SDK on first use.
+ *
+ * Async because the import is dynamic — that is the whole point. If the
+ * package is missing from node_modules, this throws here, on the one route
+ * that needs it, instead of at boot.
+ */
+export async function getStripe(): Promise<Stripe> {
   if (client) return client;
+
   const key = process.env.STRIPE_SECRET_KEY;
   if (!key) {
     throw new Error('STRIPE_SECRET_KEY is not set — cannot talk to Stripe.');
   }
+
+  let StripeSdk: typeof Stripe;
+  try {
+    StripeSdk = (await import('stripe')).default;
+  } catch (err) {
+    throw new Error(
+      'The "stripe" package is not installed on this server. ' +
+        'Run "Run NPM Install" in cPanel → Setup Node.js App and restart the app. ' +
+        `(${err instanceof Error ? err.message : String(err)})`,
+    );
+  }
+
   // No explicit apiVersion: the SDK pins the version it was built against, so
   // the two move together on upgrade instead of drifting apart.
-  client = new Stripe(key);
+  client = new StripeSdk(key);
   return client;
 }
 
@@ -78,7 +104,8 @@ export async function priceForTier(tier: Tier): Promise<Stripe.Price> {
   if (cached) return cached;
 
   const productId = productIdFor(tier);
-  const product = await getStripe().products.retrieve(productId, {
+  const stripe = await getStripe();
+  const product = await stripe.products.retrieve(productId, {
     expand: ['default_price'],
   });
 
@@ -130,7 +157,8 @@ export async function createCheckoutSession(req: CheckoutRequest): Promise<Strip
   const price = await priceForTier(req.tier);
   const base = (process.env.PUBLIC_URL ?? 'https://nactionadvisors.com').replace(/\/$/, '');
 
-  return getStripe().checkout.sessions.create({
+  const stripe = await getStripe();
+  return stripe.checkout.sessions.create({
     mode: 'subscription',
     line_items: [{ price: price.id, quantity: 1 }],
     customer_email: req.email,

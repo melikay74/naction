@@ -1,6 +1,7 @@
 import { CATEGORY_ICONS } from '../components/icons';
 import { ContactQr } from '../components/ContactQr';
 import { SocialLinks } from '../components/SocialLinks';
+import { trackPartnerClick } from '../lib/analytics';
 import { prettyUrl } from '../lib/socials';
 import { vCardHref } from '../lib/vcard';
 import {
@@ -47,11 +48,38 @@ function AddressLink({ address }: { address: string }) {
   );
 }
 
-function WebsiteLink({ website }: { website: string }) {
+function WebsiteLink({ website, partner }: { website: string; partner: PartnerResult }) {
   return (
-    <a className="partner-website" href={website} target="_blank" rel="noopener noreferrer">
+    <a
+      className="partner-website"
+      href={website}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => trackPartnerClick('Website', partner)}
+    >
       <GlobeIcon />
       {prettyUrl(website)}
+    </a>
+  );
+}
+
+/**
+ * The partner's phone number.
+ *
+ * The click is recorded before the dialer opens. Tracking is fire-and-forget
+ * (Matomo sends an image beacon) and a tel: link does not unload the page, so
+ * nothing here can delay or block the call — which must never happen on a site
+ * someone reaches from the roadside.
+ */
+function PhoneLink({ partner, className }: { partner: PartnerResult; className?: string }) {
+  return (
+    <a
+      className={className ?? 'partner-phone'}
+      href={partner.tel}
+      onClick={() => trackPartnerClick('Phone', partner)}
+    >
+      <PhoneIcon />
+      {partner.phone}
     </a>
   );
 }
@@ -95,11 +123,8 @@ function PartnerCard({ partner }: { partner: PartnerResult }) {
         </div>
       </div>
       {partner.address && <AddressLink address={partner.address} />}
-      <a className="partner-phone" href={partner.tel}>
-        <PhoneIcon />
-        {partner.phone}
-      </a>
-      {partner.website && <WebsiteLink website={partner.website} />}
+      <PhoneLink partner={partner} />
+      {partner.website && <WebsiteLink website={partner.website} partner={partner} />}
       {partner.socials && <SocialLinks socials={partner.socials} />}
     </div>
   );
@@ -132,11 +157,8 @@ function SpotlightCard({ partner }: { partner: PartnerResult }) {
           <div className="partner-meta">{partner.city}</div>
         )}
         <div className="spotlight-contact">
-          <a className="partner-phone spotlight-phone" href={partner.tel}>
-            <PhoneIcon />
-            {partner.phone}
-          </a>
-          {partner.website && <WebsiteLink website={partner.website} />}
+          <PhoneLink partner={partner} className="partner-phone spotlight-phone" />
+          {partner.website && <WebsiteLink website={partner.website} partner={partner} />}
         </div>
         {partner.socials && <SocialLinks socials={partner.socials} />}
         {/* Phones cannot scan their own screen; hand them the same vCard directly. */}
