@@ -8,6 +8,7 @@ import { saveApplication } from './applications.js';
 import { emailDiagnostics, sendApplicationEmails, verifyEmail } from './email.js';
 import { rateLimit } from './rateLimit.js';
 import { stagingAuth } from './stagingAuth.js';
+import { stripeWebhook } from './stripeWebhook.js';
 import { ValidationError, parseApplication, parseCategories, parseInteger, parseZip } from './validate.js';
 import type { PartnerSearchResponse } from './types.js';
 
@@ -24,6 +25,15 @@ const IS_STAGING = process.env.SITE_ENV !== 'production';
 const app = express();
 
 app.set('trust proxy', 1);
+
+/**
+ * Mounted first, deliberately. The Stripe webhook needs the raw request body
+ * to verify its signature, so it has to precede express.json(); and Stripe
+ * cannot send a password, so it also has to precede the staging gate below.
+ * Moving this line breaks payments in a way that is quiet and confusing.
+ */
+app.use(stripeWebhook());
+
 app.use(express.json({ limit: '32kb' }));
 
 if (IS_STAGING) {

@@ -135,6 +135,41 @@ never leaves your own mail server.
 
 `SMTP_PASS` belongs only in cPanel's environment variables, never in the repository.
 
+## 5c. Stripe (membership payments)
+
+Only needed once you start selling memberships. With these unset the site runs exactly as before —
+the webhook answers 503 and nothing else changes — so you can deploy without them.
+
+| Variable | Value |
+| --- | --- |
+| `STRIPE_SECRET_KEY` | `sk_live_…` in production (`sk_test_…` while testing) |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_…` — the **endpoint's** signing secret from the dashboard |
+| `STRIPE_PRODUCT_PRIORITY` | `prod_…` for Get Priority |
+| `STRIPE_PRODUCT_FEATURED` | `prod_…` for Get Featured |
+| `STRIPE_PRODUCT_NETWORK` | `prod_…` for Network Partner |
+| `PUBLIC_URL` | `https://nactionadvisors.com` — where Stripe returns the customer |
+
+Then in the Stripe dashboard add a webhook endpoint at
+`https://nactionadvisors.com/api/stripe/webhook`, subscribed to `checkout.session.completed`,
+`invoice.payment_failed` and `customer.subscription.deleted`, and copy its signing secret into
+`STRIPE_WEBHOOK_SECRET`.
+
+Three traps, each of which fails quietly:
+
+- **Products do not cross from a sandbox to the live account.** The `prod_…` ids used in testing will
+  not exist in live — recreate the three products there and use the new ids.
+- **The webhook signing secret is not the one `stripe listen` prints.** That one is for local testing
+  and changes every run; production needs the endpoint's own secret.
+- **`STAGING_PASSWORD` deliberately does not block the webhook.** Stripe cannot authenticate, so the
+  route is mounted ahead of the password gate and ahead of the JSON body parser. Moving that line
+  breaks payments silently — see the comment in `server/src/index.ts`.
+
+Selling and activation are covered in [TODO-stripe.md](TODO-stripe.md). Price is read from each
+product's `default_price` at checkout, so changing what a tier costs is a dashboard edit with no
+redeploy.
+
+`STRIPE_SECRET_KEY` belongs only in cPanel's environment variables, never in the repository.
+
 ## 6. Check it
 
 Visit the subdomain. You should see the site with a dark red "Staging preview" bar across the top.

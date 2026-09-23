@@ -15,7 +15,11 @@
     "build:production": "VITE_SITE_ENV=production npm run build --workspace client && npm run build --workspace server",
     "start:production": "SITE_ENV=production npm run start --workspace server",
     "start": "npm run start --workspace server",
-    "typecheck": "npm run typecheck --workspace client && npm run typecheck --workspace server"
+    "typecheck": "npm run typecheck --workspace client && npm run typecheck --workspace server",
+    "checkout-link": "npm run build --workspace server && node --env-file=.env scripts/checkout-link.mjs",
+    "stripe:check": "npm run build --workspace server && node --env-file=.env scripts/stripe-check.mjs",
+    "stripe:login": "./tools/stripe login",
+    "stripe:listen": "./tools/stripe listen --forward-to localhost:3011/api/stripe/webhook"
   },
   "devDependencies": {
     "concurrently": "^9.1.2"

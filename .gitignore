@@ -13,11 +13,20 @@ deploy/
 data/applications.json
 data/.applications.*.tmp
 
-# Credentials. SMTP settings live in cPanel's environment variables, never in
-# the repo. If you make a local .env for testing, it stays local.
+# Payment records written by the Stripe webhook. Business contact details and
+# Stripe customer ids — belongs on the server, not in version control.
+data/subscriptions.json
+data/.subscriptions.*.tmp
+
+# Downloaded developer binaries (the Stripe CLI). 29MB, and everyone should
+# fetch their own current build — see TODO-stripe.md.
+tools/
+
+# Credentials. SMTP and Stripe settings live in cPanel's environment variables,
+# never in the repo. If you make a local .env for testing, it stays local.
+# Required variables are documented in DEPLOY.md, not in an example file.
 .env
 .env.*
-!.env.example
 
 # Full-size camera originals. Kept on disk as the source for
 # client/scripts/optimize-images.sh, but far too large to commit or deploy —

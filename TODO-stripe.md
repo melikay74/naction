@@ -1,8 +1,11 @@
-# To do soon: Stripe payments for membership tiers
+# Stripe payments for membership tiers
 
-Plan written 2026-09-21. Nothing here is built yet.
+Plan written 2026-09-21. **Updated 2026-09-22: steps 1–4 are built.** See
+"What exists now" at the bottom for how to run it and what is left.
 
 ## The decision to make first: pay first, or approve first?
+
+**Decided: approve first.**
 
 The application form says "every application is reviewed personally," and each tier is sold **once
 per service type** (one Network Partner, one Featured, one Priority, for each of towing, repair and
@@ -114,3 +117,83 @@ care goes. Stripe dashboard setup (1) and legal text (6) are on the business sid
 
 A sensible first slice: step 3's checkout endpoint plus a manual tier flip — enough to take a real
 payment — with webhook automation as a second pass.
+
+---
+
+# What exists now (2026-09-22)
+
+Approve-first, manual activation. Nothing Stripe-related loads on the public
+site — the only public route is the webhook.
+
+## Files
+
+| file | does |
+| --- | --- |
+| `server/src/stripe.ts` | Stripe client; resolves each tier's price from its product's `default_price`; creates Checkout Sessions |
+| `server/src/stripeWebhook.ts` | `POST /api/stripe/webhook` — verifies signatures, records payments |
+| `server/src/subscriptions.ts` | writes `subscriptions.json` in the data directory, atomically and idempotently |
+| `scripts/stripe-check.mjs` | `npm run stripe:check` — confirms account + all three products resolve |
+| `scripts/checkout-link.mjs` | `npm run checkout-link -- …` — mints a checkout URL for one approved applicant |
+
+**Do not move the `app.use(stripeWebhook())` line in `server/src/index.ts`.** It
+sits above `express.json()` because signature verification needs the raw bytes,
+and above the staging password gate because Stripe cannot authenticate. Either
+mistake breaks payments quietly.
+
+## Selling a membership
+
+1. Add the business to `partners.json` **untiered**.
+2. Mint a link — it refuses if that tier's slot for the category is taken:
+
+   ```
+   npm run checkout-link -- --partner tow-la-002 --tier featured \
+                            --email owner@example.com --name "Westside Tow"
+   ```
+
+3. Email them the URL (good for 24 hours).
+4. When they pay, the server log prints `MEMBERSHIP PAID` with the partner id.
+5. Set `"tier": "featured"` on that record in `partners.json`. No restart needed.
+
+Cancellation prints `MEMBERSHIP ENDED`; remove the `tier` field to free the slot.
+
+## Testing locally
+
+The CLI lives at `tools/stripe` — a single binary from Stripe's GitHub
+releases, gitignored. Homebrew is not required. To replace or update it:
+
+```
+curl -sL -o /tmp/stripe.tar.gz \
+  https://github.com/stripe/stripe-cli/releases/latest/download/stripe_<version>_mac-os_arm64.tar.gz
+tar -xzf /tmp/stripe.tar.gz -C tools
+```
+
+Then, from `site/`:
+
+```
+npm run stripe:login     # one-time, opens a browser to pair with your account
+npm run stripe:listen    # forwards live events to the local server
+```
+
+`stripe listen` prints a `whsec_…` — put it in `.env` as `STRIPE_WEBHOOK_SECRET`.
+It is a different value from the production one and changes each run.
+
+Test card: `4242 4242 4242 4242`, any future expiry, any CVC, any ZIP.
+
+## Still to do
+
+- **Recreate the three products in the live account.** The ids in `.env.example`
+  are from the sandbox; products do not cross over. Live ids go in the cPanel
+  env vars.
+- **Register the production webhook** at
+  `https://nactionadvisors.com/api/stripe/webhook`, subscribed to
+  `checkout.session.completed`, `invoice.payment_failed`,
+  `customer.subscription.deleted`. Put its signing secret in cPanel.
+- **Complete the account details** so `charges_enabled` becomes true.
+- **Customer Portal** for card updates and self-service cancellation (one link,
+  no UI to build).
+- **Emails**: approval email carrying the link, "you're live" confirmation,
+  failed-payment warning. Reuse `server/src/email.ts`.
+- **Automate activation** once the manual flow is trusted — the webhook would
+  edit `partners.json` itself instead of printing an instruction.
+- **Terms of service** for the subscription: billing cycle, cancellation,
+  refunds. Lawyer item, with the CalOPPA / § 6155 / paid-placement questions.

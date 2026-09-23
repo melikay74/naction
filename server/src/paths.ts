@@ -22,6 +22,8 @@ export const DATA_DIR = process.env.NACTION_DATA_DIR
   : path.join(SITE_ROOT, 'data');
 export const PARTNERS_FILE = path.join(DATA_DIR, 'partners.json');
 export const APPLICATIONS_FILE = path.join(DATA_DIR, 'applications.json');
+/** Membership subscriptions, written by the Stripe webhook. */
+export const SUBSCRIPTIONS_FILE = path.join(DATA_DIR, 'subscriptions.json');
 /**
  * Partner logos, served at /logos/. Kept beside partners.json rather than in
  * the client build so a new logo is an upload, not a rebuild and redeploy.
