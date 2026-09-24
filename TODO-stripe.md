@@ -179,11 +179,22 @@ It is a different value from the production one and changes each run.
 
 Test card: `4242 4242 4242 4242`, any future expiry, any CVC, any ZIP.
 
+## Done
+
+- **The thank-you page** at `/membership/thanks` — Stripe's `success_url`. Built
+  as `client/src/pages/MembershipThanks.tsx`, backed by a read-only lookup at
+  `GET /api/membership/session?id=cs_…` (`server/src/membership.ts`) so the
+  confirmation shows the real business name, tier and amount. It handles four
+  states: paid, unpaid (back-button into an abandoned checkout), lookup failed
+  (still confirms — they have paid, our API's problem is not theirs), and no
+  session id at all (confirms nothing, since anyone can type the URL). Carries
+  `noindex`. Activation is still manual by design, and the page says so.
+
 ## Still to do
 
-- **Recreate the three products in the live account.** The ids in `.env.example`
-  are from the sandbox; products do not cross over. Live ids go in the cPanel
-  env vars.
+- **Recreate the three products in the live account.** The ids currently in
+  `site/.env` are from the sandbox; products do not cross over. Live ids go in
+  the cPanel env vars, never in the repository.
 - **Register the production webhook** at
   `https://nactionadvisors.com/api/stripe/webhook`, subscribed to
   `checkout.session.completed`, `invoice.payment_failed`,

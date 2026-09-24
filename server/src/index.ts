@@ -6,6 +6,7 @@ import { searchPartners } from './partners.js';
 import { regionLabelForZip } from './regions.js';
 import { saveApplication } from './applications.js';
 import { emailDiagnostics, sendApplicationEmails, verifyEmail } from './email.js';
+import { membership } from './membership.js';
 import { rateLimit } from './rateLimit.js';
 import { stagingAuth } from './stagingAuth.js';
 import { stripeWebhook } from './stripeWebhook.js';
@@ -83,6 +84,9 @@ if (IS_STAGING) {
  * categories, offset 0) and a "load more" click (one category, that column's
  * current offset).
  */
+// Read-only lookup for the post-checkout confirmation page.
+app.use(membership());
+
 app.get('/api/partners', async (req, res, next) => {
   try {
     const zip = parseZip(req.query.zip);
